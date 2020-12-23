@@ -1,10 +1,10 @@
-package src.datastructures;
+package src.datastructures.linear.stacks;
 
 /**
  * This class outlines the basic structure/functionality of a Stack.
  * This code was modified from: https://www.techiedelight.com/stack-implementation-in-java/
  */
-public class Stack
+public class StackArray
 {
     //=========================================================================
     // Instance variables
@@ -30,7 +30,7 @@ public class Stack
      * Constructs a stack of input size using an array for storage.
      * @param size The desired size of the stack.
      */
-    public Stack(int size)
+    public StackArray(int size)
     {
         capacity = size;
         elements = new Integer[size];
@@ -153,7 +153,7 @@ public class Stack
     public static void main (String[] args)
     {
         // Creating and populating the data structure
-        Stack stack = new Stack(10);
+        StackArray stack = new StackArray(10);
         stack.push(1);
         stack.push(2);
         stack.push(3);

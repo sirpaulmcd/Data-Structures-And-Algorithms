@@ -1,4 +1,4 @@
-package src.datastructures;
+package src.datastructures.linear.arrays;
 
 /**
  * This class outlines the basic structure/functionality of an ArrayList.

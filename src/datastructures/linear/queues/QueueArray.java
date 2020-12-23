@@ -1,10 +1,10 @@
-package src.datastructures;
+package src.datastructures.linear.queues;
 
 /**
  * This class outlines the basic structure/functionality of a Queue.
  * This code was modified from: https://www.techiedelight.com/queue-implementation-in-java/
  */
-public class Queue 
+public class QueueArray
 {
     //=========================================================================
     // Instance variables
@@ -38,7 +38,7 @@ public class Queue
      * Constructs a stack of input size using an array for storage.
      * @param size The desired size of the queue.
      */
-    public Queue(int size)
+    public QueueArray(int size)
     {
         capacity = size;
         elements = new Integer[size];
@@ -174,7 +174,7 @@ public class Queue
     public static void main (String[] args)
     {
         // Creating and populating the data structure
-        Queue queue = new Queue(10);
+        QueueArray queue = new QueueArray(10);
         queue.enqueue(1);
         queue.enqueue(2);
         queue.enqueue(3);

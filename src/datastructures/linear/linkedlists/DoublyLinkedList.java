@@ -1,51 +1,59 @@
-package src.datastructures;
+package src.datastructures.linear.linkedlists;
 
 /**
- * This class represents a single node of the linked list. The following code
- * was modified from https://www.geeksforgeeks.org/implementing-a-linked-list-in-java-using-class/.
+ * This class outlines the basic structure/functionality of a LinkedList. The 
+ * following code was modified from: 
+ * https://www.geeksforgeeks.org/doubly-linked-list/
  */
-class Node 
-{ 
-    //=========================================================================
-    // Instance variables
-    //=========================================================================
-    /**
-     * The data stored in the node. In this case, a String. However, depending 
-     * on what you want, this could be changed to another data type. Even your
-     * own custom data type.
-     */
-    private String data; 
-    /**
-     * The next node in the linked list.
-     */
-    private Node next; 
-
-    //=========================================================================
-    // Getters and setters
-    //=========================================================================
-    public String getData() { return this.data; }
-    public void setData(String data) { this.data = data; }
-    public Node getNext() { return this.next; }
-    public void setNext(Node next) { this.next = next; }
-
-    //=========================================================================
-    // Consturctors
-    //=========================================================================
-    /**
-     * Constructs a node with the input data.
-     */
-    public Node(String data) 
-    { 
-        this.data = data; 
-        this.next = null;
-    } 
-}
-
-/**
- * This class outlines the basic structure/functionality of a LinkedList.
- */
-public class SinglyLinkedList 
+public class DoublyLinkedList 
 {
+    /**
+     * This class represents a node of the doubly linked list.
+     */
+    public class Node
+    { 
+        //=====================================================================
+        // Instance variables
+        //=====================================================================
+        /**
+         * The data stored in the node. In this case, a String. However, 
+         * depending on what you want, this could be changed to another data 
+         * type. Even your own custom data type.
+         */
+        private String data; 
+        /**
+         * The next node in the linked list.
+         */
+        private Node next; 
+        /**
+         * The previous node in the linked list.
+         */
+        private Node prev; 
+
+        //=====================================================================
+        // Getters and setters
+        //=====================================================================
+        public String getData() { return this.data; }
+        public void setData(String data) { this.data = data; }
+        public Node getNext() { return this.next; }
+        public void setNext(Node next) { this.next = next; }
+        public Node getPrev() { return this.prev; }
+        public void setPrev(Node next) { this.prev = next; }
+
+        //=====================================================================
+        // Consturctors
+        //=====================================================================
+        /**
+         * Constructs a node with the input data.
+         */
+        public Node(String data) 
+        { 
+            this.data = data; 
+            this.next = null;
+            this.prev = null;
+        } 
+    }
+
     //=========================================================================
     // Instance variables
     //=========================================================================
@@ -60,7 +68,7 @@ public class SinglyLinkedList
     /**
      * Constructs an empty LinkedList object.
      */
-    public SinglyLinkedList()
+    public DoublyLinkedList()
     {
         this.head = null;
     }
@@ -69,7 +77,7 @@ public class SinglyLinkedList
     // Public methods
     //=========================================================================
     /**
-     * Sequentially searches the list for the node corresponding to the input 
+     * Sequentially indexes the list for the node corresponding to the input 
      * index.
      * @param index The index corresponding to the desired element.
      * @return The node corresponding to the input index, null otherwise.
@@ -119,10 +127,10 @@ public class SinglyLinkedList
         if (isEmpty()) { initHeadNode(data); } 
         // Otherwise, append data to end of list
         else 
-        { 
+        {
             Node cursor = head; 
             while (cursor.getNext() != null) { cursor = cursor.getNext(); }
-            insert(cursor, data); 
+            insert(cursor, cursor.getNext(), data); 
         } 
     }
 
@@ -144,8 +152,8 @@ public class SinglyLinkedList
             {
                 if (cursor != null) { cursor = cursor.getNext(); }
             }
-            // If node exists on cursor, insert new node after cursor
-            if (cursor != null) { insert(cursor, data); }
+            // If index corresponds with existing node, insert new node after cursor
+            if (cursor != null) { insert(cursor, cursor.getNext(), data); }
         }
     }
 
@@ -159,10 +167,8 @@ public class SinglyLinkedList
         if (isEmpty()) { return null; }
         // Sequentially search the array for a node of matching criteria
         Node cursor = head;
-        Node prevNode = null;
         while (cursor != null && cursor.getData() != data)
         {
-            prevNode = cursor;
             cursor = cursor.getNext();
         }
         // If no results found, return null
@@ -170,7 +176,7 @@ public class SinglyLinkedList
         // If cursor is head, make next element head
         else if (cursor == head) { return removeHeadNode(); }
         // If cursor is further in the list, delete node normally
-        else { return removeTypicalNode(cursor, prevNode); }
+        else { return removeTypicalNode(cursor); }
     }
 
     /**
@@ -186,16 +192,14 @@ public class SinglyLinkedList
         if (index == 0) { return removeHeadNode(); }
         // Move cursor to indexed node
         Node cursor = head;
-        Node prevNode = null;
         int i = 0;
         while (cursor != null && i < index)
         {
-            prevNode = cursor;
             cursor = cursor.getNext();
             i++;
         }
         // If indexed node exists, remove node
-        if (cursor != null) { return removeTypicalNode(cursor, prevNode); }
+        if (cursor != null) { return removeTypicalNode(cursor); }
         // Otherwise, return null
         else { return null; }
     }
@@ -211,7 +215,7 @@ public class SinglyLinkedList
         while (cursor != null)
         {
             s += "[" + cursor.getData() + "]";
-            if (cursor.getNext() != null) { s += "->"; }
+            if (cursor.getNext() != null) { s += "<->"; }
             cursor = cursor.getNext();
         }
         return s;
@@ -232,16 +236,20 @@ public class SinglyLinkedList
     /**
      * Creates a new node and appends it to the input node.
      * @param prevNode The previous node in the LinkedList to the new node.
+     * @param nextNode The next node in the LinkedList to the new node.
      * @param data The data corresponding to the new node.
      */
-    private void insert(Node prevNode, String data)
+    private void insert(Node prevNode, Node nextNode, String data)
     {
         // Create new node with data
         Node newNode = new Node(data);
-        // Point new node at previous nodes neighbors
-        newNode.setNext(prevNode.getNext());
-        // Point previous node to new node
+        // Link new node to list
+        newNode.setNext(nextNode);
+        newNode.setPrev(prevNode);
+        // Update outdated links
         prevNode.setNext(newNode);
+        if (nextNode != null) { nextNode.setPrev(newNode); }
+        
     }
 
     /**
@@ -262,7 +270,11 @@ public class SinglyLinkedList
     private void replaceHeadNode(String data)
     {
         Node newNode = new Node(data);
-        if (head != null) { newNode.setNext(head); }
+        if (head != null) 
+        { 
+            newNode.setNext(head);
+            head.setPrev(newNode);
+        }
         head = newNode;
     }
 
@@ -275,6 +287,7 @@ public class SinglyLinkedList
     {
         Node removedNode = new Node(head.getData());
         head = head.getNext();
+        head.setPrev(null);
         return removedNode;
     }
 
@@ -282,14 +295,19 @@ public class SinglyLinkedList
      * Removes a non-head node from the LinkedList. Points the previous node
      * to the node after the removed node.
      * @param nodeToRemove The node to be removed.
-     * @param prevNode The node directly before the node to be remove.
      * @return The removed node.
      */
-    private Node removeTypicalNode(Node nodeToRemove, Node prevNode)
+    private Node removeTypicalNode(Node nodeToRemove)
     {
         Node removedNode = nodeToRemove;
-        prevNode.setNext(nodeToRemove.getNext());
+        Node prevNode = nodeToRemove.getPrev();
+        Node nextNode = nodeToRemove.getNext();
+        // Rewire connections around removed node
+        prevNode.setNext(nextNode);
+        if (nextNode != null) { nextNode.setPrev(prevNode); } 
+        // Cut connections from removed node
         removedNode.setNext(null);
+        removedNode.setPrev(null);
         return removedNode;
     }
 
@@ -302,29 +320,29 @@ public class SinglyLinkedList
     public static void main(String[] args) 
     {
         // Creating and populating the data structure
-        SinglyLinkedList singlyLinkedList = new SinglyLinkedList();
-        singlyLinkedList.add("A");
-        singlyLinkedList.add("B");
-        singlyLinkedList.add("C");
-        singlyLinkedList.add("D");
-        singlyLinkedList.add("E");
-        singlyLinkedList.add("F");
-        singlyLinkedList.add("G");
+        DoublyLinkedList doublyLinkedList = new DoublyLinkedList();
+        doublyLinkedList.add("A");
+        doublyLinkedList.add("B");
+        doublyLinkedList.add("C");
+        doublyLinkedList.add("D");
+        doublyLinkedList.add("E");
+        doublyLinkedList.add("F");
+        doublyLinkedList.add("G");
         System.out.println("Initial list:");
-        System.out.println(singlyLinkedList + "\n");
+        System.out.println(doublyLinkedList + "\n");
         // Access: O(n) - Sequential search
         System.out.println("Accessing element at index 0 (should be A):");
-        System.out.println(singlyLinkedList.get(0).getData() + "\n");
+        System.out.println(doublyLinkedList.get(0).getData() + "\n");
         // Search: O(n) - Sequential search
         System.out.println("Searching for the index of \"F\" (should be 5):");
-        System.out.println(singlyLinkedList.indexOf("F") + "\n");
+        System.out.println(doublyLinkedList.indexOf("F") + "\n");
         // Insertion: O(n) - Can be O(1) if you have a reference to the previous node
         System.out.println("Inserting value of \"H\" into index 4:");
-        singlyLinkedList.add(4, "H");
-        System.out.println(singlyLinkedList + "\n");
+        doublyLinkedList.add(4, "H");
+        System.out.println(doublyLinkedList + "\n");
         // Deletion: O(n) - Can be O(1) if you have a reference to the previous node
         System.out.println("Removing element of value \"C\":");
-        singlyLinkedList.remove("C");
-        System.out.println(singlyLinkedList + "\n");
+        doublyLinkedList.remove("C");
+        System.out.println(doublyLinkedList + "\n");
     }
 }
