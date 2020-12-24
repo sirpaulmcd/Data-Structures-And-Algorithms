@@ -12,13 +12,13 @@ public class SinglyLinkedList
      */
     public class Node 
     { 
-        //=========================================================================
+        //=====================================================================
         // Instance variables
-        //=========================================================================
+        //=====================================================================
         /**
-         * The data stored in the node. In this case, a String. However, depending 
-         * on what you want, this could be changed to another data type. Even your
-         * own custom data type.
+         * The data stored in the node. In this case, a String. However, 
+         * depending on what you want, this could be changed to another data 
+         * type. Even your own custom data type.
          */
         private String data; 
         /**
@@ -26,17 +26,17 @@ public class SinglyLinkedList
          */
         private Node next; 
 
-        //=========================================================================
+        //=====================================================================
         // Getters and setters
-        //=========================================================================
+        //=====================================================================
         public String getData() { return this.data; }
         public void setData(String data) { this.data = data; }
         public Node getNext() { return this.next; }
         public void setNext(Node next) { this.next = next; }
 
-        //=========================================================================
+        //=====================================================================
         // Consturctors
-        //=========================================================================
+        //=====================================================================
         /**
          * Constructs a node with the input data.
          */

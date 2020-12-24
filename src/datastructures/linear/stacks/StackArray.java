@@ -1,8 +1,9 @@
 package src.datastructures.linear.stacks;
 
 /**
- * This class outlines the basic structure/functionality of a Stack.
- * This code was modified from: https://www.techiedelight.com/stack-implementation-in-java/
+ * This class outlines the basic structure/functionality of a Stack that has
+ * been implemented using an array. This code was modified from: 
+ * https://www.techiedelight.com/stack-implementation-in-java/
  */
 public class StackArray
 {
