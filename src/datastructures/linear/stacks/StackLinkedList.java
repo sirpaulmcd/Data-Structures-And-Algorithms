@@ -1,12 +1,15 @@
 package src.datastructures.linear.stacks;
 
 /**
- * This class outlines the basic structure/functionality of a Stack that has
- * been implemented using an linked list. This code was modified from: 
+ * This class outlines the basic structure/functionality of a stack that has
+ * been implemented using a singly linked list. This code was modified from: 
  * https://www.geeksforgeeks.org/implement-a-stack-using-singly-linked-list/
  */
 public class StackLinkedList 
 {
+    /**
+     * This class represents one node of the singly linked list.
+     */
     public class Node 
     { 
         //=====================================================================

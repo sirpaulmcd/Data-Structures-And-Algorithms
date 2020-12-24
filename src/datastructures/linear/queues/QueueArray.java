@@ -1,8 +1,9 @@
 package src.datastructures.linear.queues;
 
 /**
- * This class outlines the basic structure/functionality of a Queue.
- * This code was modified from: https://www.techiedelight.com/queue-implementation-in-java/
+ * This class outlines the basic structure/functionality of a queue implemented
+ * using an array. This code was modified from:
+ * https://www.techiedelight.com/queue-implementation-in-java/
  */
 public class QueueArray
 {
@@ -35,35 +36,20 @@ public class QueueArray
     // Constructors
     //=========================================================================
     /**
-     * Constructs a stack of input size using an array for storage.
+     * Constructs a queue of input size using an array for storage.
      * @param size The desired size of the queue.
      */
     public QueueArray(int size)
     {
         capacity = size;
         elements = new Integer[size];
-        front = -1;
-        rear = -1;
+        front = rear = -1;
         size = 0;
     }
  
-    /**
-     * Removes an element from the front of the queue. Note that 
-     * `front+1 % capacity` will reset front to 0 if it exceeds the maximum 
-     * array index.
-     */
-    public Integer dequeue()
-    {
-        if (isEmpty()) { return null; }
-        Integer removedElement = front;
-        // If dequeuing last element, reset front and back to -1
-        if (front == rear) { front = rear = -1; }
-        // Otherwise, increment front
-        else { front = (front + 1) % capacity; }
-        size--;
-        return removedElement;
-    }
- 
+    //=========================================================================
+    // Public methods
+    //=========================================================================
     /**
      * Adds an element to the back of the queue. Note that 
      * `rear+1 % capacity` will reset rear to 0 if it exceeds the maximum 
@@ -79,6 +65,23 @@ public class QueueArray
         else { rear = (rear + 1) % capacity; }
         elements[rear] = value;
         size++;
+    }
+
+    /**
+     * Removes an element from the front of the queue. Note that 
+     * `front+1 % capacity` will reset front to 0 if it exceeds the maximum 
+     * array index.
+     */
+    public Integer dequeue()
+    {
+        if (isEmpty()) { return null; }
+        Integer removedElement = front;
+        // If dequeuing last element, reset front and back to -1
+        if (front == rear) { front = rear = -1; }
+        // Otherwise, increment front
+        else { front = (front + 1) % capacity; }
+        size--;
+        return removedElement;
     }
  
     /**
