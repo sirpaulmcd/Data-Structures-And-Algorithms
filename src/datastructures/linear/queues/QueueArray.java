@@ -172,7 +172,7 @@ public class QueueArray
     // Main
     //=========================================================================
     /**
-     * Main method to show off Stack functionality.
+     * Main method to show off queue functionality.
      */
     public static void main (String[] args)
     {

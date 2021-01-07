@@ -1,7 +1,7 @@
 package src.datastructures.tree.binarysearchtrees;
 
 /**
- * This class outlines the basic structure/functionality of a BinarySearchTree. 
+ * This class outlines the basic structure/functionality of a binary search tree. 
  * The following code was modified from: 
  * https://algorithms.tutorialhorizon.com/binary-search-tree-complete-implementation/
  * and GeeksForGeeks example implementations.
