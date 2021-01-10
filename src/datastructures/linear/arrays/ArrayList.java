@@ -9,7 +9,15 @@ public class ArrayList<T>
     // Instance variables
     //=========================================================================
     /**
-     * The array of elements.
+     * The number of elements currently stored in the ArrayList.
+     */
+    private int size;
+    /**
+     * The capacity of the storage array.
+     */
+    private int capacity;
+    /**
+     * The array of elements for storage.
      */
     private Object[] elements;
 
@@ -17,36 +25,40 @@ public class ArrayList<T>
     // Constructors
     //=========================================================================
     /**
-     * Constructs a new ArrayList.
+     * Constructs a new ArrayList. A java ArrayList has a default capacity of
+     * 10.
      */
     public ArrayList() 
     {
-        elements = new Object[0];
+        this.size = 0;
+        this.capacity = 10;
+        this.elements = new Object[10];
     }
 
     //=========================================================================
     // Public methods
     //=========================================================================
     /**
-     * Gets the element corresponding to the input index.
-     * @param index The index corresponding to the desired element.
-     * @return The element corresponding to the input index.
+     * Given an index, accesses the corresponding element.
+     * @param index The index of the desired element.
+     * @return The element corresponding to the input index if valid, null 
+     * otherwise.
      */
-    public Object get(int index)
+    public Object access(int index)
     {
-        return elements[index];
+        if (isExistingIndex(index)) { return elements[index]; }
+        return null;
     }
 
     /**
-     * Sequentially seaches the array and returns the index of the input value
-     * if found.
+     * Given a value, sequentially seaches the array for a match.
      * @param value The value to search for in the array.
      * @return The index of the found value (if any), -1 otherwise.
      */
-    public int indexOf(Object value)
+    public int search(Object value)
     {
         int index = -1;
-        for (int i = 0; i < elements.length; i++)
+        for (int i = 0; i < size; i++)
         {
             if (elements[i] == value)
             {
@@ -61,9 +73,9 @@ public class ArrayList<T>
      * Appends an element to the end of the ArrayList.
      * @param value The value to be inserted.
      */
-    public void add(Object value)
+    public void insert(Object value)
     {
-        add(elements.length, value);
+        insert(size, value);
     }
 
     /**
@@ -71,24 +83,12 @@ public class ArrayList<T>
      * @param index The index of insertion.
      * @param value The value to be inserted.
      */
-    public void add(int index, Object value)
+    public void insert(int index, Object value)
     {
-        // Create new array with one extra element
-        Object[] newArray = new Object[elements.length + 1];
-        // Copy values before index into new array
-        for (int i = 0; i < index; i++)
-        {
-            newArray[i] = elements[i];
-        }
-        // Insert value at index into new array
-        newArray[index] = value;
-        // Copy values after index into new array
-        for (int i = index + 1; i < newArray.length; i++)
-        {
-            newArray[i] = elements[i - 1];
-        }
-        // Overwrite old array with new array.
-        elements = newArray;
+        if (index == size) { insertAtEnd(value); }
+        else if (!isExistingIndex(index)) { return; }
+        else { insertInMiddle(index, value); }
+        ensureCapacity();
     }
 
     /**
@@ -96,14 +96,11 @@ public class ArrayList<T>
      * @param value The value to be removed.
      * @return The removed value if it exists, null otherwise.
      */
-    public Object remove(Object value)
+    public Object delete(Object value)
     {
-        // Search ArrayList for value matching input
-        int index = indexOf(value);
-        // If the value doesn't exist, return null
-        if (index < 0) { return null; }
-        // If value does exist, remove it
-        return remove(index);
+        int index = search(value);
+        if (index == -1) { return null; }
+        return delete(index);
     }
 
     /**
@@ -111,40 +108,115 @@ public class ArrayList<T>
      * @param index The index of the value to be removed.
      * @return The removed value.
      */
-    public Object remove(int index)
+    public Object delete(int index)
     {
-        // Check that index is valid
-        if (index >= elements.length) { return null; }
-        // Store value to be removed
-        Object deletedValue = get(index);
-        // Shift all elements after the index down by one
-        for (int i = index + 1; i < elements.length; i++)
-        {
-            elements[i - 1] = elements[i];
-        }
-        // Copy elements into array of one size smaller
-        Object[] newArray = new Object[elements.length - 1];
-        for (int i = 0; i < newArray.length; i++)
-        {
-            newArray[i] = elements[i];
-        }
-        // Overwrite old array with new array and return removed element
-        elements = newArray;
+        if (!isExistingIndex(index)) { return null; }
+        Object deletedValue = access(index);
+        if (index == size) { removeFromEnd(); }
+        else { removeFromMiddle(index); }
         return deletedValue;
     }
 
     /**
-     * Turns the contents of the ArrayList into a string for printing.
+     * Prints the contents of the ArrayList.
      */
-    public String toString()
+    public void print()
     {
-        String s = "[";
-        for (int i = 0; i < elements.length - 1; i++)
+        if (size <= 0) { return; }
+        System.out.print("[");
+        for (int i = 0; i < size - 1; i++)
         {
-            s = s + elements[i].toString() + ", ";
+            System.out.print(elements[i] + ", ");
         }
-        s = s + elements[elements.length - 1].toString() + "]";
-        return s;
+        System.out.println(elements[size - 1] + "]\n");
+    }
+
+    //=========================================================================
+    // Private methods
+    //=========================================================================
+    /**
+     * Checks whether the input index is exists in the ArrayList.
+     * @param index The index to be checked.
+     * @return True if index exists, false otherwise.
+     */
+    private boolean isExistingIndex(int index)
+    {
+        return index > 0 || index < size;
+    }
+
+    /**
+     * Inserts the input object at the end of the ArrayList.
+     * @param value The value to be inserted.
+     */
+    private void insertAtEnd(Object value)
+    {
+        elements[size] = value;
+        size++; 
+    }
+
+    /**
+     * Inserts a value in the middle of the ArrayList.
+     * @param index The index of the insertion position.
+     * @param value The value to be inserted.
+     */
+    private void insertInMiddle(int index, Object value)
+    {
+        // Move move elements past and including index up one slot
+        for (int i = size; i > index; i--)
+        {
+            elements[i] = elements[i - 1];
+        }
+        // Insert new value at index and increase size
+        elements[index] = value;
+        size++;
+    }
+
+    /**
+     * Removes an element from the end of the ArrayList.
+     */
+    private void removeFromEnd()
+    {
+        elements[size] = null;
+        size--;
+    }
+
+    /**
+     * Removes indexed element from the ArrayList.
+     * @param index The index of the element to be removed.
+     */
+    private void removeFromMiddle(int index)
+    {
+        // Remove value at index and decrease size
+        elements[index] = null;
+        size--;
+        // Move move elements past index down one slot
+        for (int i = index; i < size; i++)
+        {
+            elements[i] = elements[i + 1];
+        }
+    }
+
+    /**
+     * Ensure the array has enough capcity to store more data. If capacity is
+     * reached, increases capacity. Note that Java ArrayLists don't double in 
+     * like a Vector. Instead, capacity increases using the below formula.
+     */
+    private void ensureCapacity()
+    {
+        if (size == capacity)
+        {
+            // Create larger array
+            int newCapacity = (capacity * 3)/2 + 1;
+            Object[] newArray = new Object[newCapacity];
+            // Copy values from old array to new array
+            for (int i = 0; i < capacity; i++)
+            {
+                newArray[i] = elements[i];
+            }
+            // Overwrite with updated values
+            elements = newArray;
+            capacity = newCapacity;
+        }
     }
 
     //=========================================================================
@@ -157,28 +229,28 @@ public class ArrayList<T>
     {
         // Creating and populating the data structure
         ArrayList<String> arrayList = new ArrayList<String>();
-        arrayList.add("A");
-        arrayList.add("B");
-        arrayList.add("C");
-        arrayList.add("D");
-        arrayList.add("E");
-        arrayList.add("F");
-        arrayList.add("G");
+        arrayList.insert("A");
+        arrayList.insert("B");
+        arrayList.insert("C");
+        arrayList.insert("D");
+        arrayList.insert("E");
+        arrayList.insert("F");
+        arrayList.insert("G");
         System.out.println("Initial list:");
-        System.out.println(arrayList + "\n");
+        arrayList.print();
         // Access: O(1)
         System.out.println("Accessing element at index 0 (should be A):");
-        System.out.println(arrayList.get(0) + "\n");
-        // Search: O(n) - Sequential search
+        System.out.println(arrayList.access(0) + "\n");
+        // Search: O(n)
         System.out.println("Searching for the index of \"F\" (should be 5):");
-        System.out.println(arrayList.indexOf("F") + "\n");
-        // Insertion: O(n) - Must populate new array
+        System.out.println(arrayList.search("F") + "\n");
+        // Insertion: O(n)
         System.out.println("Inserting value of \"H\" into index 4:");
-        arrayList.add(4, "H");
-        System.out.println(arrayList + "\n");
-        // Deletion: O(n) - Must populate new array
+        arrayList.insert(4, "H");
+        arrayList.print();
+        // Deletion: O(n)
         System.out.println("Removing element of value \"C\":");
-        arrayList.remove("C");
-        System.out.println(arrayList + "\n");
+        arrayList.delete("C");
+        arrayList.print();
     }
 }
