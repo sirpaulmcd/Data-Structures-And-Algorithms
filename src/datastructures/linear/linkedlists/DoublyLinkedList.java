@@ -1,54 +1,50 @@
 package src.datastructures.linear.linkedlists;
 
 /**
- * This class outlines the basic structure/functionality of a LinkedList. The 
- * following code was modified from: 
- * https://www.geeksforgeeks.org/doubly-linked-list/
+ * This class outlines the basic structure/functionality of a doubly linked 
+ * list. The code is very similar to the singly linked list. However, when 
+ * searching for an indexed/valued node, the previous node to the cursor no 
+ * longer has to be stored. Additionally, when setting up connections between 
+ * nodes, the previous node must also be considered. The following code was 
+ * modified from:
+ * https://www.geeksforgeeks.org/implementing-a-linked-list-in-java-using-class/
  */
 public class DoublyLinkedList 
 {
     /**
-     * This class represents a node of the doubly linked list.
+     * This class represents a node of the doubly linked list. For simplicity, 
+     * I have left out getter and setter functions. Remember to use good 
+     * practice when implementing your own value stuctures. 
      */
-    public class Node
+    public class Node 
     { 
         //=====================================================================
         // Instance variables
         //=====================================================================
         /**
-         * The data stored in the node. In this case, a String. However, 
-         * depending on what you want, this could be changed to another data 
-         * type. Even your own custom data type.
+         * The value stored in the node. In this case, a String. However, 
+         * depending on what you want, this could be changed to another value 
+         * type. Even your own custom value type.
          */
-        private String data; 
+        public String value;
         /**
          * The next node in the linked list.
          */
-        private Node next; 
+        public Node next;
         /**
          * The previous node in the linked list.
          */
-        private Node prev; 
-
-        //=====================================================================
-        // Getters and setters
-        //=====================================================================
-        public String getData() { return this.data; }
-        public void setData(String data) { this.data = data; }
-        public Node getNext() { return this.next; }
-        public void setNext(Node next) { this.next = next; }
-        public Node getPrev() { return this.prev; }
-        public void setPrev(Node next) { this.prev = next; }
+        public Node prev;
 
         //=====================================================================
         // Consturctors
         //=====================================================================
         /**
-         * Constructs a node with the input data.
+         * Constructs a node with the input value.
          */
-        public Node(String data) 
+        public Node(String value) 
         { 
-            this.data = data; 
+            this.value = value; 
             this.next = null;
             this.prev = null;
         } 
@@ -58,9 +54,15 @@ public class DoublyLinkedList
     // Instance variables
     //=========================================================================
     /**
-     * The head (i.e. first element) of the list.
+     * The first node of the list.
      */
     private Node head;
+    /**
+     * The last node of the list. This field isn't totally necessary but
+     * linked lists typically have the option to insert to either the front
+     * or the back of the list.
+     */
+    private Node tail;
 
     //=========================================================================
     // Constructors
@@ -71,154 +73,116 @@ public class DoublyLinkedList
     public DoublyLinkedList()
     {
         this.head = null;
+        this.tail = null;
     }
 
     //=========================================================================
     // Public methods
     //=========================================================================
     /**
-     * Sequentially indexes the list for the node corresponding to the input 
-     * index.
-     * @param index The index corresponding to the desired element.
-     * @return The node corresponding to the input index, null otherwise.
+     * Given an index, accesses the corresponding element.
+     * @param index The index of the desired element.
+     * @return The element corresponding to the input index if valid, null 
+     * otherwise.
      */
-    public Node get(int index)
+    public String access(int index)
     {
         if (isEmpty()) { return null; }
-        // Sequentially search through list for node of input index
-        Node cursor = head;
-        for (int i = 0; i < index; i++)
-        {
-            if (cursor != null) { cursor = cursor.getNext(); }
-        }
-        return cursor;
+        Node indexedNode = getIndexedNode(index);
+        return indexedNode.value;
     }
 
     /**
-     * Sequentially seaches the list and returns the index of the input value
-     * if found.
-     * @param data The data of the node to be searched for.
-     * @return The index of the found value (if any), -1 otherwise.
+     * Given a value, sequentially seaches for a match.
+     * @param value The value to search for.
+     * @return True if match found, false otherwise.
      */
-    public int indexOf(String data)
+    public boolean search(String value)
     {
-        if (isEmpty()) { return -1; }
-        // Sequentially search list for node with matching criteria
-        Node cursor = head;
-        int i = 0;
-        while (cursor != null && cursor.getData() != data)
-        {
-            cursor = cursor.getNext();
-            i++;
-        }
-        // If cursor reached the end with no match, return -1
-        if (cursor == null) { return -1; }
-        // If match found, return index
-        else { return i; }
+        if (isEmpty()) { return false; }
+        Node valuedNode = getValuedNode(value);
+        if (valuedNode == null) { return false; }
+        else { return true; }
     }
 
     /**
-     * Adds a new data node to the list.
-     * @param data The data corresponding to the new node.
+     * Inserts a new value node to the end of the list.
+     * @param value The value corresponding to the new node.
      */
-    public void add(String data)
+    public void insert(String value)
     {
-        // If LinkedList is empty, make the new node as head 
-        if (isEmpty()) { initHeadNode(data); } 
-        // Otherwise, append data to end of list
-        else 
-        {
-            Node cursor = head; 
-            while (cursor.getNext() != null) { cursor = cursor.getNext(); }
-            insert(cursor, cursor.getNext(), data); 
-        } 
+        if (isEmpty()) { initHeadNode(value); }
+        else { insertNode(tail, value); } 
     }
 
     /**
-     * Adds a new data node to the list at the specified index.
-     * @param index Index for the node to be inserted.
-     * @param data The data corresponding to the new node.
+     * Inserts a value into the list at the specified index.
+     * @param index Index for the insertion.
+     * @param value The value to be inserted.
      */
-    public void add(int index, String data)
+    public void insert(int index, String value)
     {
-        if (isEmpty()) { initHeadNode(data); }
-        // If indexed node is head, replace head
-        else if (index == 0) { replaceHeadNode(data); }
+        // Case 1) List empty
+        if (isEmpty()) { initHeadNode(value); }
+        // Case 2) Insertion at head node
+        else if (index == 0) { replaceHeadNode(value); }
+        // Case 3) Insertion further in the list
         else if (index > 0)
         {
-            // Move cursor to the node before the indexed position
-            Node cursor = head;
-            for (int i = 0; i < index - 1; i++)
-            {
-                if (cursor != null) { cursor = cursor.getNext(); }
-            }
-            // If index corresponds with existing node, insert new node after cursor
-            if (cursor != null) { insert(cursor, cursor.getNext(), data); }
+            Node indexedNode = getIndexedNode(index);
+            if (indexedNode != null) { insertNode(indexedNode.prev, value); }
         }
     }
 
     /**
-     * Removes a node of the input value from the LinkedList if it exists.
-     * @param data The data corresponding to the node to be removed.
-     * @return The removed node if any, null otherwise.
+     * Deletes a node of the input value from the LinkedList if it exists.
+     * @param value The value corresponding to the node to be removed.
+     * @return The value of the removed node if any, null otherwise.
      */
-    public Node remove(String data)
+    public String delete(String value)
     {
         if (isEmpty()) { return null; }
         // Sequentially search the array for a node of matching criteria
-        Node cursor = head;
-        while (cursor != null && cursor.getData() != data)
-        {
-            cursor = cursor.getNext();
-        }
-        // If no results found, return null
-        if (cursor == null) { return null; }
-        // If cursor is head, make next element head
-        else if (cursor == head) { return removeHeadNode(); }
-        // If cursor is further in the list, delete node normally
-        else { return removeTypicalNode(cursor); }
+        Node valuedNode = getValuedNode(value);
+        // Case 1) Not match found
+        if (valuedNode == null) { return null; }
+        // Case 2) Removed value is head node
+        else if (valuedNode == head) { return removeHeadNode(); }
+        // Case 3) Removed value is further down the list
+        else { return removeTypicalNode(valuedNode); }
     }
 
     /**
-     * Removes a node of the input value from the LinkedList if it exists.
+     * Deletes a node of the input index from the LinkedList if it exists.
      * @param index The index of the node to be removed.
-     * @param data The data corresponding to the node to be removed.
-     * @return The removed node if any, null otherwise.
+     * @param value The value corresponding to the node to be removed.
+     * @return The value of the removed node if any, null otherwise.
      */
-    public Node remove(int index, String data)
+    public String delete(int index)
     {
         if (isEmpty()) { return null; }
-        // If index is for head, remove head
+        // Case 1) Removed value is at head
         if (index == 0) { return removeHeadNode(); }
-        // Move cursor to indexed node
-        Node cursor = head;
-        int i = 0;
-        while (cursor != null && i < index)
-        {
-            cursor = cursor.getNext();
-            i++;
-        }
-        // If indexed node exists, remove node
-        if (cursor != null) { return removeTypicalNode(cursor); }
-        // Otherwise, return null
-        else { return null; }
+        // Case 2) Removed value is further in the list
+        Node indexedNode = getIndexedNode(index);
+        if (indexedNode == null) { return null; }
+        else { return removeTypicalNode(indexedNode); }
     }
 
     /**
-     * Turns the contents of the LinkedList into a string for printing.
+     * Prints the contents of the linked list.
      */
-    public String toString()
+    public void print()
     {
-        String s = "";
-        if (isEmpty()) { return s; }
+        if (isEmpty()) { return; }
         Node cursor = head;
         while (cursor != null)
         {
-            s += "[" + cursor.getData() + "]";
-            if (cursor.getNext() != null) { s += "<->"; }
-            cursor = cursor.getNext();
+            System.out.print("[" + cursor.value + "]");
+            if (cursor.next != null) { System.out.print("->");; }
+            cursor = cursor.next;
         }
-        return s;
+        System.out.println("\n");
     }
   
     //=========================================================================
@@ -234,81 +198,106 @@ public class DoublyLinkedList
     }
 
     /**
+     * Gets the node corresponding to the input index (if any).
+     * @param index The index of the node to be returned.
+     * @return The node corresponding to the input index if found. Null
+     * otherwise.
+     */
+    private Node getIndexedNode(int index)
+    {
+        if (index < 0) { return null; }
+        Node cursor = head;
+        for (int i = 0; i < index; i++)
+        {
+            if (cursor == null) { break; }
+            else { cursor = cursor.next; }
+        }
+        return cursor;
+    }
+
+    /**
+     * Gets the node corresponding to the input value (if any).
+     * @param value The value of the node to be found.
+     * @return The node corresponding to the input value if found. Null
+     * otherwise.
+     */
+    private Node getValuedNode(String value)
+    {
+        Node cursor = head;
+        while (cursor != null && cursor.value != value)
+        {
+            cursor = cursor.next;
+        }
+        return cursor;
+    }
+
+    /**
      * Creates a new node and appends it to the input node.
      * @param prevNode The previous node in the LinkedList to the new node.
-     * @param nextNode The next node in the LinkedList to the new node.
-     * @param data The data corresponding to the new node.
+     * @param value The value corresponding to the new node.
      */
-    private void insert(Node prevNode, Node nextNode, String data)
+    private void insertNode(Node prevNode, String value)
     {
-        // Create new node with data
-        Node newNode = new Node(data);
-        // Link new node to list
-        newNode.setNext(nextNode);
-        newNode.setPrev(prevNode);
-        // Update outdated links
-        prevNode.setNext(newNode);
-        if (nextNode != null) { nextNode.setPrev(newNode); }
-        
+        Node newNode = new Node(value);
+        Node nextNode = prevNode.next;
+        newNode.next = nextNode;
+        newNode.prev = prevNode;
+        prevNode.next = newNode;
+        if (nextNode != null) { nextNode.prev = newNode; }
+        else { tail = newNode; }
     }
 
     /**
      * Creates a new node and makes it the head of the LinkedList.
-     * @param data The data corresponding to the new node.
+     * @param value The value corresponding to the new node.
      */
-    private void initHeadNode(String data)
+    private void initHeadNode(String value)
     {
-        Node newNode = new Node(data); 
-        head = newNode; 
+        Node newNode = new Node(value); 
+        head = newNode;
+        tail = newNode;
     }
 
     /**
      * Creates a new node and makes it the head of the LinkedList. Makes the
      * previous head the next element in the LinkedList.
-     * @param data
+     * @param value
      */
-    private void replaceHeadNode(String data)
+    private void replaceHeadNode(String value)
     {
-        Node newNode = new Node(data);
-        if (head != null) 
-        { 
-            newNode.setNext(head);
-            head.setPrev(newNode);
-        }
+        Node newNode = new Node(value);
+        if (head != null) { newNode.next = head; }
         head = newNode;
     }
 
     /**
      * Removes the head node from the LinkedList. The second node becomes the
      * new head node.
-     * @return
+     * @return The value of the removed node.
      */
-    private Node removeHeadNode()
+    private String removeHeadNode()
     {
-        Node removedNode = new Node(head.getData());
-        head = head.getNext();
-        head.setPrev(null);
-        return removedNode;
+        Node removedNode = head;
+        head = head.next;
+        if (head != null) { head.prev = null; } 
+        else { tail = null; }
+        return removedNode.value;
     }
 
     /**
-     * Removes a non-head node from the LinkedList. Points the previous node
-     * to the node after the removed node.
+     * Removes a non-head node from the LinkedList.
      * @param nodeToRemove The node to be removed.
-     * @return The removed node.
+     * @return The value of the removed node.
      */
-    private Node removeTypicalNode(Node nodeToRemove)
+    private String removeTypicalNode(Node nodeToRemove)
     {
         Node removedNode = nodeToRemove;
-        Node prevNode = nodeToRemove.getPrev();
-        Node nextNode = nodeToRemove.getNext();
-        // Rewire connections around removed node
-        prevNode.setNext(nextNode);
-        if (nextNode != null) { nextNode.setPrev(prevNode); } 
-        // Cut connections from removed node
-        removedNode.setNext(null);
-        removedNode.setPrev(null);
-        return removedNode;
+        Node prevNode = nodeToRemove.prev;
+        Node nextNode = nodeToRemove.next;
+        if (removedNode == tail) { tail = prevNode; }
+        prevNode.next = removedNode.next;
+        if (nextNode != null) { nextNode.prev = removedNode.prev; } 
+        return removedNode.value;
     }
 
     //=========================================================================
@@ -319,30 +308,36 @@ public class DoublyLinkedList
      */
     public static void main(String[] args) 
     {
-        // Creating and populating the data structure
+        // Creating and populating the value structure
         DoublyLinkedList doublyLinkedList = new DoublyLinkedList();
-        doublyLinkedList.add("A");
-        doublyLinkedList.add("B");
-        doublyLinkedList.add("C");
-        doublyLinkedList.add("D");
-        doublyLinkedList.add("E");
-        doublyLinkedList.add("F");
-        doublyLinkedList.add("G");
+        // Insertion: O(1)
+        doublyLinkedList.insert("A");
+        doublyLinkedList.insert("B");
+        doublyLinkedList.insert("C");
+        doublyLinkedList.insert("D");
+        doublyLinkedList.insert("E");
+        doublyLinkedList.insert("F");
+        doublyLinkedList.insert("G");
         System.out.println("Initial list:");
-        System.out.println(doublyLinkedList + "\n");
-        // Access: O(n) - Sequential search
+        doublyLinkedList.print();
+        // Access: O(n)
         System.out.println("Accessing element at index 0 (should be A):");
-        System.out.println(doublyLinkedList.get(0).getData() + "\n");
-        // Search: O(n) - Sequential search
-        System.out.println("Searching for the index of \"F\" (should be 5):");
-        System.out.println(doublyLinkedList.indexOf("F") + "\n");
-        // Insertion: O(n) - Can be O(1) if you have a reference to the previous node
+        System.out.println(doublyLinkedList.access(0) + "\n");
+        // Search: O(n)
+        System.out.println("Searching if \"F\" is in list (should be true):");
+        System.out.println(doublyLinkedList.search("F") + "\n");
+        System.out.println("Searching if \"Q\" is in list (should be false):");
+        System.out.println(doublyLinkedList.search("Q") + "\n");
+        // Search: O(n) + Insertion: O(1)
         System.out.println("Inserting value of \"H\" into index 4:");
-        doublyLinkedList.add(4, "H");
-        System.out.println(doublyLinkedList + "\n");
-        // Deletion: O(n) - Can be O(1) if you have a reference to the previous node
-        System.out.println("Removing element of value \"C\":");
-        doublyLinkedList.remove("C");
-        System.out.println(doublyLinkedList + "\n");
+        doublyLinkedList.insert(4, "H");
+        doublyLinkedList.print();
+        // Search: O(n) + Deletion: O(1)
+        System.out.println("Deleting element of value \"C\":");
+        doublyLinkedList.delete("C");
+        doublyLinkedList.print();
+        System.out.println("Deleting element of index 5 (should be F):");
+        doublyLinkedList.delete(5);
+        doublyLinkedList.print();
     }
 }

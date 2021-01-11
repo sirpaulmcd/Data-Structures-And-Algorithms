@@ -51,8 +51,8 @@ public class ArrayList<T>
     }
 
     /**
-     * Given a value, sequentially seaches the array for a match.
-     * @param value The value to search for in the array.
+     * Given a value, sequentially seaches for a match.
+     * @param value The value to search for.
      * @return The index of the found value (if any), -1 otherwise.
      */
     public int search(Object value)
@@ -229,6 +229,7 @@ public class ArrayList<T>
     {
         // Creating and populating the data structure
         ArrayList<String> arrayList = new ArrayList<String>();
+        // Insertion to end of array: O(1)
         arrayList.insert("A");
         arrayList.insert("B");
         arrayList.insert("C");
@@ -244,11 +245,11 @@ public class ArrayList<T>
         // Search: O(n)
         System.out.println("Searching for the index of \"F\" (should be 5):");
         System.out.println(arrayList.search("F") + "\n");
-        // Insertion: O(n)
+        // Insertion to middle of array : O(n)
         System.out.println("Inserting value of \"H\" into index 4:");
         arrayList.insert(4, "H");
         arrayList.print();
-        // Deletion: O(n)
+        // Deletion from middle of array: O(n)
         System.out.println("Removing element of value \"C\":");
         arrayList.delete("C");
         arrayList.print();
