@@ -8,7 +8,9 @@ package src.datastructures.linear.queues;
 public class QueueLinkedList 
 {
     /**
-     * This class represents one node of the singly linked list.
+     * This class represents one node of the queues linked list. For 
+     * simplicity, I have left out getter and setter functions. Remember to use 
+     * good practice when implementing your own value stuctures. 
      */
     public class Node 
     { 
@@ -20,19 +22,11 @@ public class QueueLinkedList
          * depending on what you want, this could be changed to another data 
          * type. Even your own custom data type.
          */
-        private Integer data; 
+        public Integer data; 
         /**
          * The next node in the linked list.
          */
-        private Node next; 
-
-        //=====================================================================
-        // Getters and setters
-        //=====================================================================
-        public Integer getData() { return this.data; }
-        public void setData(Integer data) { this.data = data; }
-        public Node getNext() { return this.next; }
-        public void setNext(Node next) { this.next = next; }
+        public Node next; 
 
         //=====================================================================
         // Consturctors
@@ -83,8 +77,8 @@ public class QueueLinkedList
         if (isEmpty()) { front = rear = newNode; }
         else
         {
-            rear.setNext(newNode);
-            rear = rear.getNext();
+            rear.next = newNode;
+            rear = rear.next;
         }
     } 
 
@@ -95,9 +89,9 @@ public class QueueLinkedList
     { 
         if (isEmpty()) { return null; }
         Node removedNode = front;
-        if (front.getNext() != null) { front = front.getNext(); }
+        if (front.next != null) { front = front.next; }
         else { front = rear = null; }
-        return removedNode.getData();
+        return removedNode.data;
     }
 
     /**
@@ -107,7 +101,7 @@ public class QueueLinkedList
     public Integer peek()
     {
         if (isEmpty()) { return null; }
-        return front.getData();
+        return front.data;
     }
 
     /**
@@ -119,9 +113,9 @@ public class QueueLinkedList
     {
         Node cursor = front;
         int i = 0;
-        while (cursor != null && cursor.getData() != value)
+        while (cursor != null && cursor.data != value)
         {
-            cursor = cursor.getNext();
+            cursor = cursor.next;
             i++;
         }
         if (cursor == null) { return null; }
@@ -138,17 +132,17 @@ public class QueueLinkedList
     }
 
     /**
-     * Prints the contents of the queue to the console.
+     * Prints the contents of the queue.
      */
     public void print()
     {
-        if (isEmpty()) { System.out.println("Cannot print empty queue."); }
+        if (isEmpty()) { return; }
         Node cursor = front;
         while (cursor != null)
         {
-            System.out.print(cursor.getData());
-            if (cursor.getNext() != null) { System.out.print(" < "); }
-            cursor = cursor.getNext();
+            System.out.print(cursor.data);
+            if (cursor.next != null) { System.out.print(" < "); }
+            cursor = cursor.next;
         }
         System.out.println("\n");
     }
@@ -163,6 +157,7 @@ public class QueueLinkedList
     {
         // Creating and populating the data structure
         QueueLinkedList queue = new QueueLinkedList();
+        // Insertion to rear of queue: O(1)
         queue.enqueue(1);
         queue.enqueue(2);
         queue.enqueue(3);
@@ -170,17 +165,17 @@ public class QueueLinkedList
         queue.enqueue(5);
         System.out.println("Initial queue:");
         queue.print();
-        // Access: O(n)
+        // Access element at front of queue: O(1)
         System.out.println("Peeking (i.e. accessing) the front element of the queue (should be 1):");
         System.out.println(queue.peek() + "\n");
         // Search: O(n)
         System.out.println("Searching for the index of the value 3 (should be 2):");
         System.out.println(queue.search(3)  + "\n");
-        // Insertion: O(1)
+        // Insertion to rear of queue: O(1)
         System.out.println("Enqueuing (i.e. inserting) a value of 42 to rear of the queue:");
         queue.enqueue(42);
         queue.print();
-        // Deletion: O(1)
+        // Deletion from front of queue: O(1)
         System.out.println("Dequeuing (i.e. deleting) two values from the front of the queue:");
         queue.dequeue();
         queue.dequeue();

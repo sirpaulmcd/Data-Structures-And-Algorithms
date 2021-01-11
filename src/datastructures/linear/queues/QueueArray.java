@@ -137,18 +137,16 @@ public class QueueArray
     }
 
     /**
-     * Turns the contents of the queue into a string for printing.
+     * Prints the contents of the queue.
      */
-    public String toString()
+    public void print()
     {
-        if (isEmpty()) { return "Cannot print empty queue."; }
-        String s = "";
+        if (isEmpty()) { return; }
         for (int i = front; i != rear; i = (i + 1) % capacity)
         {
-            s += elements[i] + " > ";
+            System.out.print(elements[i] + " > ");
         }
-        s += elements[rear];
-        return s;
+        System.out.println(elements[rear] + "\n");
     }
 
     //=========================================================================
@@ -178,24 +176,28 @@ public class QueueArray
     {
         // Creating and populating the data structure
         QueueArray queue = new QueueArray(10);
+        // Insertion to rear of queue: O(1)
         queue.enqueue(1);
         queue.enqueue(2);
         queue.enqueue(3);
         queue.enqueue(4);
         queue.enqueue(5);
-        System.out.println("Initial queue: " + "\n" + queue + "\n");
-        // Access: O(n)
-        System.out.println("Peeking (i.e. accessing) the front element of the queue (should be 1): " + "\n" + queue.peek() + "\n");
+        System.out.println("Initial queue:");
+        queue.print();
+        // Access element at front of queue: O(1)
+        System.out.println("Peeking (i.e. accessing) the front element of the queue (should be 1):");
+        System.out.println(queue.peek() + "\n");
         // Search: O(n)
-        System.out.println("Searching for the index of the value 3 (should be 2): " + "\n" + queue.search(3) + "\n");
-        // Insertion: O(1)
+        System.out.println("Searching for the index of the value 3 (should be 2): ");
+        System.out.println(queue.search(3) + "\n");
+        // Insertion to rear of queue: O(1)
         System.out.println("Enqueuing (i.e. inserting) a value of 42 to rear of the queue:");
         queue.enqueue(42);
-        System.out.println(queue + "\n");
-        // Deletion: O(1)
+        queue.print();
+        // Deletion from front of queue: O(1)
         System.out.println("Dequeuing (i.e. deleting) two values from the front of the queue:");
         queue.dequeue();
         queue.dequeue();
-        System.out.println(queue + "\n");
+        queue.print();
     }
 }
