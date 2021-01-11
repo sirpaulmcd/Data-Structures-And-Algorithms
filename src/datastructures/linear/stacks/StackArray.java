@@ -112,20 +112,18 @@ public class StackArray
         return size() == capacity;
     }
 
-
     /**
-     * Turns the contents of the stack into a string for printing.
+     * Prints the contents of the stack.
      */
-    public String toString()
+    public void print()
     {
-        if (isEmpty()) { return "Cannot print empty stack."; }
-        String s = "";
+        if (isEmpty()) { return; }
         for (int i = 0; i <= top; i++)
         {
-            s += elements[i];
-            if (i != top) { s += " > "; }
+            System.out.print(elements[i]);
+            if (i != top) { System.out.print(" > "); }
         }
-        return s;
+        System.out.println("\n");
     }
 
     //=========================================================================
@@ -155,24 +153,28 @@ public class StackArray
     {
         // Creating and populating the data structure
         StackArray stack = new StackArray(10);
+        // Insertion to top of stack: O(1)
         stack.push(1);
         stack.push(2);
         stack.push(3);
         stack.push(4);
         stack.push(5);
-        System.out.println("Initial stack: " + "\n" + stack + "\n");
-        // Access: O(n)
-        System.out.println("Peeking (i.e. accessing) the top element of the stack (should be 5): " + "\n" + stack.peek() + "\n");
+        System.out.println("Initial stack:");
+        stack.print();
+        // Access element at top of stack: O(n)
+        System.out.println("Peeking (i.e. accessing) the top element of the stack (should be 5):");
+        System.out.println(stack.peek() + "\n");
         // Search: O(n)
-        System.out.println("Searching for the index of the value 3 (should be 2): " + "\n" + stack.search(3) + "\n");
-        // Insertion: O(1)
+        System.out.println("Searching for the index of the value 3 (should be 2):");
+        System.out.println(stack.search(3) + "\n");
+        // Insertion to top of stack: O(1)
         System.out.println("Pushing (i.e. inserting) a value of 42 to the top of the stack:");
         stack.push(42);
-        System.out.println(stack + "\n");
-        // Deletion: O(1)
+        stack.print();
+        // Deletion from top of stack: O(1)
         System.out.println("Popping (i.e. deleting) two values from the top of the stack:");
         stack.pop();
         stack.pop();
-        System.out.println(stack + "\n");
+        stack.print();
     }
 }

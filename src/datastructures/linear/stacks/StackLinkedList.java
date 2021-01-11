@@ -8,7 +8,9 @@ package src.datastructures.linear.stacks;
 public class StackLinkedList 
 {
     /**
-     * This class represents one node of the singly linked list.
+     * This class represents one node of the stacks linked list. For 
+     * simplicity, I have left out getter and setter functions. Remember to use 
+     * good practice when implementing your own value stuctures. 
      */
     public class Node 
     { 
@@ -20,19 +22,11 @@ public class StackLinkedList
          * depending on what you want, this could be changed to another data 
          * type. Even your own custom data type.
          */
-        private Integer data; 
+        public Integer data; 
         /**
          * The next node in the linked list.
          */
-        private Node next; 
-
-        //=====================================================================
-        // Getters and setters
-        //=====================================================================
-        public Integer getData() { return this.data; }
-        public void setData(Integer data) { this.data = data; }
-        public Node getNext() { return this.next; }
-        public void setNext(Node next) { this.next = next; }
+        public Node next; 
 
         //=====================================================================
         // Consturctors
@@ -76,7 +70,7 @@ public class StackLinkedList
     public void push(Integer value)
     {
         Node newNode = new Node(value); 
-        newNode.setNext(top);
+        newNode.next = top;
         top = newNode; 
     } 
 
@@ -87,8 +81,8 @@ public class StackLinkedList
     { 
         Node removedNode = top;
         if (top == null) { return null; }
-        top = top.getNext();
-        return removedNode.getData();
+        top = top.next;
+        return removedNode.data;
     }
 
     /**
@@ -98,7 +92,7 @@ public class StackLinkedList
     public Integer peek() 
     {
         if (isEmpty()) { return null; }
-        else { return top.getData(); } 
+        else { return top.data; } 
     } 
 
     /**
@@ -111,9 +105,9 @@ public class StackLinkedList
         if (isEmpty()) { return -1; }
         Node cursor = top;
         int i = 0;
-        while (cursor != null && cursor.getData() != value)
+        while (cursor != null && cursor.data != value)
         {
-            cursor = cursor.getNext();
+            cursor = cursor.next;
             i++;
         }
         if (cursor == null) { return -1; }
@@ -134,13 +128,13 @@ public class StackLinkedList
      */
     public void print()
     {
-        if (isEmpty()) { System.out.println("Cannot print empty stack."); }
+        if (isEmpty()) { return; }
         Node cursor = top;
         while (cursor != null)
         {
-            System.out.print(cursor.getData());
-            if (cursor.getNext() != null) { System.out.print(" < ");}
-            cursor = cursor.getNext();
+            System.out.print(cursor.data);
+            if (cursor.next != null) { System.out.print(" < ");}
+            cursor = cursor.next;
         }
         System.out.println("\n");
     }
@@ -155,6 +149,7 @@ public class StackLinkedList
     {
         // Creating and populating the data structure
         StackLinkedList stack = new StackLinkedList();
+        // Insertion to top of stack: O(1)
         stack.push(1);
         stack.push(2);
         stack.push(3);
@@ -162,17 +157,17 @@ public class StackLinkedList
         stack.push(5);
         System.out.println("Initial stack:");
         stack.print();
-        // Access: O(n)
+        // Access element at top of stack: O(n)
         System.out.println("Peeking (i.e. accessing) the top element of the stack (should be 5):");
         System.out.println(stack.peek() + "\n");
         // Search: O(n)
         System.out.println("Searching for the index of the value 3 (should be 2):");
         System.out.println(stack.search(3) + "\n");
-        // Insertion: O(1)
+        // Insertion to top of stack: O(1)
         System.out.println("Pushing (i.e. inserting) a value of 42 to the top of the stack:");
         stack.push(42);
         stack.print();
-        // Deletion: O(1)
+        // Deletion from top of stack: O(1)
         System.out.println("Popping (i.e. deleting) two values from the top of the stack:");
         stack.pop();
         stack.pop();
