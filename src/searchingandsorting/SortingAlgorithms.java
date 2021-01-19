@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 /**
  * This class outlines various sorting algorithms. Using the main method, you
- * can find the execution time for the each sorting algorithms with various
+ * can find the execution time for the each sorting algorithm with various
  * array orders and sizes. Can be used to plot a time complexity chart.
  */
 public class SortingAlgorithms
@@ -20,15 +20,15 @@ public class SortingAlgorithms
      */
     public String[] getUserInput()
     {
+        Scanner scanner = new Scanner(System.in);
         while (true)
         {
             System.out.println(
                 "Please enter\n" +
                 "- the order of the array (ascending, descending, or random)\n" + 
-                "- the size of the array\n" + 
+                "- the size of the array (positive integer)\n" + 
                 "- the sorting algorithm (selection, bubble, insertion, quick, or merge)\n" +
                 "all separated by a space:");
-            Scanner scanner = new Scanner(System.in);
             String input = scanner.nextLine();
             String[] inputs = input.strip().split("\\s+");
             if (isValidOrder(inputs[0]) && isValidSize(inputs[1]) && isValidAlgorithm(inputs[2]))
@@ -36,8 +36,8 @@ public class SortingAlgorithms
                 scanner.close();
                 return inputs;
             }
-            System.out.println("Error: Invalid input.");
-            scanner.close();
+            System.out.println("Error: Invalid input. Press enter to try again.");
+            scanner.nextLine();
         }
     }
 
