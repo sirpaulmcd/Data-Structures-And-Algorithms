@@ -27,7 +27,7 @@ public class SearchingAlgorithms
                 "Please enter\n" +
                 "- the order of the array (ascending, descending, or random)\n" + 
                 "- the size of the array (positive integer)\n" + 
-                "- the searching algorithm (sequential or binary)\n" +
+                "- the searching algorithm (linear or binary)\n" +
                 "- the type of value to be searched for (nonexistent, random, first, or last) \n" + 
                 "all separated by a space:");
             
@@ -72,7 +72,7 @@ public class SearchingAlgorithms
      */
     private boolean isValidAlgorithm(String algorithm)
     {
-        return algorithm.equals("sequential") ||
+        return algorithm.equals("linear") ||
             algorithm.equals("binary");
     }
 
@@ -190,8 +190,8 @@ public class SearchingAlgorithms
     {
         switch (algorithm)
         {
-            case "sequential":
-                sequentialSearch(array, value); break;
+            case "linear":
+                linearSearch(array, value); break;
             case "binary":
                 if (!order.equals("ascending"))
                 {
@@ -206,14 +206,14 @@ public class SearchingAlgorithms
     }
 
     //=========================================================================
-    // Sequential search
+    // Linear search
     //=========================================================================
     /**
      * Performs a linear/sequential search on the input array.
      * @param arr The array to be searched.
      * @param value The value to be found.
      */
-    private void sequentialSearch(int[] arr, int value)
+    private void linearSearch(int[] arr, int value)
     {
         for (int i = 0; i < arr.length; i++)
         {
