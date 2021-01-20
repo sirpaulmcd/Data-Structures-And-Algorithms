@@ -1,4 +1,4 @@
-package src.searchingandsorting;
+package src.sorting;
 
 import java.util.Random;
 import java.util.Scanner;
