@@ -176,18 +176,17 @@ public class SortingAlgorithms
     //=========================================================================
     /**
      * Performs selection sort on the input array. Algorithm modified from from 
-     * https://www.geeksforgeeks.org/selection-sort/.\
+     * https://www.geeksforgeeks.org/selection-sort/.
      * @param arr The array to be sorted.
      */
     private void selectionSort(int[] arr)
     {
-        int n = arr.length; 
         // One by one move boundary of unsorted subarray 
-        for (int i = 0; i < n-1; i++) 
+        for (int i = 0; i < arr.length-1; i++) 
         { 
             // Find the minimum element in unsorted array 
             int minIndex = i; 
-            for (int j = i + 1; j < n; j++)
+            for (int j = i + 1; j < arr.length; j++)
             {
                 if (arr[j] < arr[minIndex]) { minIndex = j; }      
             }
@@ -203,27 +202,29 @@ public class SortingAlgorithms
     //=========================================================================
     /**
      * Performs bubble sort in the input array. Algorithm modified from 
-     * https://stackabuse.com/sorting-algorithms-in-java/#bubblesort.
+     * https://www.geeksforgeeks.org/bubble-sort/.
      * @param arr The array to be sorted.
      */
     private void bubbleSort(int[] arr)
     {
-        boolean sorted = false;
-        while (!sorted) 
+        for (int i = 0; i < arr.length-1; i++)
         {
-            sorted = true;
-            // For every element in array...
-            for (int i = 0; i < arr.length - 1; i++) 
+            boolean sorted = true;
+            // For every element in the unsorted subarray...
+            for (int j = 0; j < arr.length-i-1; j++) 
             {
-                // If larger than neighbor, swap and mark array as not sorted
-                if (arr[i] > arr[i+1]) 
-                {
-                    int temp = arr[i];
-                    arr[i] = arr[i+1];
-                    arr[i+1] = temp;
+                // If larger than next neighbor... 
+                if (arr[j] > arr[j+1]) 
+                { 
+                    // Swap and mark array as not sorted
+                    int temp = arr[j]; 
+                    arr[j] = arr[j+1]; 
+                    arr[j+1] = temp;
                     sorted = false;
-                }
+                } 
             }
+            // If entire array traversed without a swap, break
+            if (sorted == true) { break; }
         }
     }
 
@@ -232,7 +233,7 @@ public class SortingAlgorithms
     //=========================================================================
     /**
      * Performs insertion sort on the input array. Algorithm modified from 
-     * https://stackabuse.com/sorting-algorithms-in-java/#insertionsort.
+     * https://www.geeksforgeeks.org/insertion-sort/.
      * @param arr The array to be sorted.
      */
     private void insertionSort(int[] arr)
@@ -278,7 +279,7 @@ public class SortingAlgorithms
     }
 
     /**
-      * Sorts the input array (left and right halfs already sorted). By
+      * Merges the input array (left and right halfs already sorted). By
       * splitting each sorted half into separate subarrays and combining them 
       * into a single sorted array. Algorithm modified from 
       * https://stackabuse.com/sorting-algorithms-in-java/#mergesort
@@ -310,6 +311,7 @@ public class SortingAlgorithms
         // Until one subarray is completely copied over into new array...
         while (i < sizeLeft && j < sizeRight) 
         { 
+            // Copy the smallest remaining value between the two into the new array...
             if (L[i] <= R[j]) 
             { 
                 arr[k] = L[i]; 
@@ -342,7 +344,8 @@ public class SortingAlgorithms
     // Quick sort
     //=========================================================================
     /**
-     * Performs quick sort on the input array. Algorithm modified from 
+     * Performs a quick sort with randomized partitioning on the input array. 
+     * Algorithm modified from 
      * https://www.geeksforgeeks.org/quicksort-using-random-pivoting/.
      * @param arr The array to be sorted.
      * @param leftIndex The leftmost index of the array.
@@ -362,10 +365,11 @@ public class SortingAlgorithms
     } 
 
     /**
-     * Selects element at end of array to be the pivot. Then, swaps other
-     * elements such that all elements to the left of the pivot are lesser and 
-     * all elements to the right of the pivot are greater. Algorithm modified 
-     * from https://www.geeksforgeeks.org/quicksort-using-random-pivoting/.
+     * Selects a random element to be the pivot and moves it to the end of the
+     * array. Then, swaps other elements such that all elements to the left of 
+     * the pivot are lesser and all elements to the right of the pivot are 
+     * greater. Algorithm modified from
+     * https://www.geeksforgeeks.org/quicksort-using-random-pivoting/.
      * @param arr The array to be sorted.
      * @param leftIndex The leftmost index of the array.
      * @param rightIndex The rightmost index of the array.
